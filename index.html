@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet ECG Care - 會員管理系統</title>
+
+```
+<style>
+    /* =========================================================
+       CSS:ROOT-START
+       ========================================================= */
+    :root {
+        --brand-primary: #7ccfc1;
+        --brand-secondary: #b9e8e2;
+        --brand-dark: #155e63;
+        --brand-deep: #0f4c50;
+
+        --bg-main: #f5fbfa;
+        --bg-soft: #edf8f6;
+        --white: #ffffff;
+
+        --text-dark: #183b3d;
+        --text-main: #28585b;
+        --text-light: #6b8d8f;
+
+        --border-soft: rgba(124, 207, 193, 0.28);
+
+        --glass-bg: rgba(255, 255, 255, 0.72);
+
+        --shadow-soft:
+            0 20px 50px rgba(21, 94, 99, 0.08);
+
+        --shadow-glow:
+            0 0 25px rgba(124, 207, 193, 0.25);
+
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --radius-sm: 10px;
+    }
+
+
+    /* =========================================================
+       CSS:RESET-START
+       ========================================================= */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        min-height: 100vh;
+
+        font-family:
+            "Noto Sans TC",
+            "Microsoft JhengHei",
+            Arial,
+            sans-serif;
+
+        color: var(--text-dark);
+
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(124, 207, 193, 0.18),
+                transparent 32%
+            ),
+            radial-gradient(
+                circle at 90% 20%,
+                rgba(185, 232, 226, 0.28),
+                transparent 30%
+            ),
+            linear-gradient(
+                135deg,
+                #f8fdfc 0%,
+                #eef9f7 50%,
+                #f5fbfa 100%
+            );
+
+        overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select {
+        font: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+
+    /* =========================================================
+       CSS:BACKGROUND-START
+       ========================================================= */
+    .background-orb {
+        position: fixed;
+
+        width: 320px;
+        height: 320px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(124, 207, 193, 0.18),
+                rgba(124, 207, 193, 0)
+            );
+
+        pointer-events: none;
+        z-index: -1;
+
+        animation:
+            floatOrb 10s ease-in-out infinite;
+    }
+
+    .background-orb--one {
+        top: -120px;
+        left: -100px;
+    }
+
+    .background-orb--two {
+        right: -120px;
+        bottom: 10%;
+        animation-delay: -4s;
+    }
+
+    @keyframes floatOrb {
+        0%,
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+            transform: translate3d(0, 25px, 0);
+        }
+    }
+
+
+    /* =========================================================
+       CSS:HEADER-START
+       ========================================================= */
+    .site-header {
+        width: 100%;
+
+        padding: 22px 5%;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        background: rgba(255, 255, 255, 0.62);
+
+        border-bottom:
+            1px solid rgba(124, 207, 193, 0.18);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        position: sticky;
+        top: 0;
+
+        z-index: 100;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .brand-icon {
+        width: 48px;
+        height: 48px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        border-radius: 14px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--brand-primary),
+                var(--brand-secondary)
+            );
+
+        color: var(--brand-dark);
+
+        font-size: 22px;
+        font-weight: 900;
+
+        box-shadow:
+            0 8px 25px rgba(124, 207, 193, 0.28);
+    }
+
+    .brand-text h1 {
+        font-size: 18px;
+        font-weight: 800;
+
+        color: var(--brand-dark);
+
+        letter-spacing: 0.5px;
+    }
+
+    .brand-text p {
+        margin-top: 3px;
+
+        font-size: 12px;
+        color: var(--text-light);
+    }
+
+    .header-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 9px 14px;
+
+        border-radius: 30px;
+
+        background:
+            rgba(124, 207, 193, 0.12);
+
+        border:
+            1px solid rgba(124, 207, 193, 0.25);
+
+        color: var(--brand-dark);
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #59c6a7;
+
+        box-shadow:
+            0 0 8px rgba(89, 198, 167, 0.9);
+
+        animation:
+            pulseDot 1.6s infinite;
+    }
+
+    @keyframes pulseDot {
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.7);
+        }
+    }
+
+
+    /* =========================================================
+       CSS:MAIN-START
+       ========================================================= */
+    .page-container {
+        width: min(1180px, 90%);
+
+        margin: 0 auto;
+
+        padding:
+            55px 0 80px;
+    }
+
+    .hero-section {
+        display: grid;
+
+        grid-template-columns:
+            1.05fr 0.95fr;
+
+        gap: 42px;
+
+        align-items: center;
+
+        margin-bottom: 45px;
+    }
+
+    .hero-copy {
+        animation:
+            floatCard 5s ease-in-out infinite;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 8px 13px;
+
+        border-radius: 30px;
+
+        background:
+            rgba(124, 207, 193, 0.12);
+
+        border:
+            1px solid rgba(124, 207, 193, 0.25);
+
+        color: var(--brand-dark);
+
+        font-size: 13px;
+        font-weight: 800;
+
+        margin-bottom: 18px;
+    }
+
+    .hero-copy h2 {
+        font-size:
+            clamp(34px, 5vw, 56px);
+
+        line-height: 1.12;
+
+        color: var(--brand-deep);
+
+        letter-spacing: -1.5px;
+    }
+
+    .hero-copy h2 span {
+        color: var(--brand-primary);
+    }
+
+    .hero-copy p {
+        margin-top: 20px;
+
+        max-width: 580px;
+
+        font-size: 16px;
+        line-height: 1.9;
+
+        color: var(--text-main);
+    }
+
+
+    /* =========================================================
+       CSS:ECG-MONITOR-START
+       ========================================================= */
+    .ecg-monitor {
+        position: relative;
+
+        padding: 24px;
+
+        border-radius: 28px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.86),
+                rgba(238, 250, 247, 0.72)
+            );
+
+        border:
+            1px solid rgba(124, 207, 193, 0.3);
+
+        box-shadow:
+            0 30px 70px rgba(21, 94, 99, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+
+        animation:
+            floatCard 6s ease-in-out infinite;
+    }
+
+    .monitor-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 15px;
+    }
+
+    .monitor-title {
+        font-size: 13px;
+        font-weight: 800;
+
+        color: var(--brand-dark);
+
+        letter-spacing: 0.8px;
+    }
+
+    .monitor-heart {
+        color: #56bba9;
+
+        font-size: 18px;
+
+        animation:
+            heartBeat 1.1s ease-in-out infinite;
+    }
+
+    @keyframes heartBeat {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        15% {
+            transform: scale(1.22);
+        }
+
+        30% {
+            transform: scale(1);
+        }
+    }
+
+
+    /* =========================================================
+       CSS:ECG-SCREEN-START
+       ========================================================= */
+    .ecg-screen {
+        position: relative;
+
+        width: 100%;
+        height: 190px;
+
+        overflow: hidden;
+
+        border-radius: 18px;
+
+        background:
+            linear-gradient(
+                rgba(13, 66, 69, 0.97),
+                rgba(10, 56, 59, 0.98)
+            );
+
+        border:
+            1px solid rgba(124, 207, 193, 0.25);
+
+        box-shadow:
+            inset 0 0 35px rgba(0, 0, 0, 0.25),
+            0 0 25px rgba(124, 207, 193, 0.08);
+    }
+
+    .ecg-screen::before {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        background-image:
+            linear-gradient(
+                rgba(124, 207, 193, 0.09) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                90deg,
+                rgba(124, 207, 193, 0.09) 1px,
+                transparent 1px
+            );
+
+        background-size: 20px 20px;
+
+        pointer-events: none;
+    }
+
+    .ecg-svg {
+        position: absolute;
+
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+
+        overflow: visible;
+    }
+
+    .ecg-wave {
+        fill: none;
+
+        stroke: #7ccfc1;
+        stroke-width: 3;
+
+        stroke-linecap: round;
+        stroke-linejoin: round;
+
+        filter:
+            drop-shadow(
+                0 0 4px rgba(124, 207, 193, 0.95)
+            )
+            drop-shadow(
+                0 0 10px rgba(124, 207, 193, 0.8)
+            )
+            drop-shadow(
+                0 0 22px rgba(124, 207, 193, 0.35)
+            );
+
+        stroke-dasharray: 1600;
+        stroke-dashoffset: 1600;
+
+        animation:
+            ecgDraw 5s linear infinite;
+    }
+
+    @keyframes ecgDraw {
+        0% {
+            stroke-dashoffset: 1600;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .ecg-label {
+        position: absolute;
+
+        top: 14px;
+        right: 16px;
+
+        color:
+            rgba(190, 242, 235, 0.75);
+
+        font-size: 10px;
+        font-weight: 700;
+
+        letter-spacing: 1.5px;
+    }
+
+    .ecg-bpm {
+        position: absolute;
+
+        left: 18px;
+        bottom: 15px;
+
+        display: flex;
+        align-items: baseline;
+
+        gap: 6px;
+    }
+
+    .ecg-bpm strong {
+        color: #b9e8e2;
+
+        font-size: 24px;
+        font-weight: 800;
+
+        text-shadow:
+            0 0 10px rgba(124, 207, 193, 0.6);
+    }
+
+    .ecg-bpm span {
+        color:
+            rgba(185, 232, 226, 0.7);
+
+        font-size: 10px;
+    }
+
+    .monitor-footer {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 10px;
+
+        margin-top: 14px;
+    }
+
+    .monitor-data {
+        padding: 10px;
+
+        border-radius: 12px;
+
+        background:
+            rgba(124, 207, 193, 0.08);
+
+        border:
+            1px solid rgba(124, 207, 193, 0.14);
+
+        text-align: center;
+    }
+
+    .monitor-data small {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--text-light);
+
+        font-size: 10px;
+    }
+
+    .monitor-data strong {
+        color: var(--brand-dark);
+
+        font-size: 14px;
+    }
+
+
+    /* =========================================================
+       CSS:FLOATING-CARDS-START
+       ========================================================= */
+    @keyframes floatCard {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    .floating-card {
+        padding: 25px;
+
+        border-radius: var(--radius-lg);
+
+        background: var(--glass-bg);
+
+        border:
+            1px solid rgba(255, 255, 255, 0.8);
+
+        box-shadow: var(--shadow-soft);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .floating-card:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 25px 60px rgba(21, 94, 99, 0.12),
+            var(--shadow-glow);
+    }
+
+
+    /* =========================================================
+       CSS:FORM-START
+       ========================================================= */
+    .section-title {
+        margin-bottom: 18px;
+    }
+
+    .section-title h3 {
+        font-size: 25px;
+        color: var(--brand-dark);
+    }
+
+    .section-title p {
+        margin-top: 5px;
+
+        color: var(--text-light);
+
+        font-size: 13px;
+    }
+
+    .member-form {
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            1.4fr
+            1fr
+            auto;
+
+        gap: 12px;
+
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        font-weight: 800;
+
+        color: var(--brand-dark);
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+
+        min-height: 46px;
+
+        padding: 0 13px;
+
+        border-radius: 11px;
+
+        border:
+            1px solid rgba(124, 207, 193, 0.32);
+
+        background:
+            rgba(255, 255, 255, 0.78);
+
+        color: var(--text-dark);
+
+        outline: none;
+
+        transition:
+            border-color 0.25s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        border-color: var(--brand-primary);
+
+        background: white;
+
+        box-shadow:
+            0 0 0 4px rgba(124, 207, 193, 0.12),
+            0 0 18px rgba(124, 207, 193, 0.18);
+    }
+
+    .primary-button {
+        min-height: 46px;
+
+        padding: 0 20px;
+
+        border: 0;
+
+        border-radius: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--brand-primary),
+                #69bfb1
+            );
+
+        color: white;
+
+        font-weight: 800;
+
+        box-shadow:
+            0 10px 22px rgba(124, 207, 193, 0.28);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            opacity 0.25s ease;
+    }
+
+    .primary-button:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 15px 30px rgba(124, 207, 193, 0.38);
+    }
+
+    .primary-button:disabled {
+        opacity: 0.55;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       CSS:TABLE-START
+       ========================================================= */
+    .table-card {
+        margin-top: 24px;
+
+        overflow: hidden;
+    }
+
+    .table-wrapper {
+        width: 100%;
+
+        overflow-x: auto;
+    }
+
+    .member-table {
+        width: 100%;
+
+        border-collapse: collapse;
+
+        min-width: 680px;
+    }
+
+    .member-table th {
+        padding: 15px 14px;
+
+        background:
+            rgba(124, 207, 193, 0.09);
+
+        color: var(--brand-dark);
+
+        font-size: 12px;
+        font-weight: 800;
+
+        text-align: left;
+
+        border-bottom:
+            1px solid rgba(124, 207, 193, 0.18);
+    }
+
+    .member-table td {
+        padding: 15px 14px;
+
+        color: var(--text-main);
+
+        font-size: 13px;
+
+        border-bottom:
+            1px solid rgba(124, 207, 193, 0.1);
+    }
+
+    .member-table tbody tr {
+        transition:
+            background 0.25s ease,
+            transform 0.25s ease;
+    }
+
+    .member-table tbody tr:hover {
+        background:
+            rgba(124, 207, 193, 0.06);
+    }
+
+    .empty-row td {
+        padding: 35px;
+
+        text-align: center;
+
+        color: var(--text-light);
+    }
+
+
+    /* =========================================================
+       CSS:ROLE-BADGE-START
+       ========================================================= */
+    .role-badge {
+        display: inline-flex;
+
+        align-items: center;
+
+        padding: 6px 10px;
+
+        border-radius: 30px;
+
+        font-size: 11px;
+        font-weight: 800;
+
+        border: 1px solid;
+    }
+
+    .role-instructor {
+        color: #16756d;
+
+        background:
+            rgba(89, 198, 167, 0.14);
+
+        border-color:
+            rgba(89, 198, 167, 0.35);
+
+        box-shadow:
+            0 0 12px rgba(89, 198, 167, 0.18);
+    }
+
+    .role-advanced {
+        color: #28718b;
+
+        background:
+            rgba(91, 178, 211, 0.14);
+
+        border-color:
+            rgba(91, 178, 211, 0.35);
+
+        box-shadow:
+            0 0 12px rgba(91, 178, 211, 0.18);
+    }
+
+    .role-normal {
+        color: #577c7e;
+
+        background:
+            rgba(174, 202, 201, 0.18);
+
+        border-color:
+            rgba(174, 202, 201, 0.4);
+    }
+
+
+    /* =========================================================
+       CSS:DELETE-BUTTON-START
+       ========================================================= */
+    .delete-button {
+        min-height: 34px;
+
+        padding: 0 14px;
+
+        border-radius: 9px;
+
+        background: transparent;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.25s ease,
+            background 0.25s ease,
+            box-shadow 0.25s ease,
+            color 0.25s ease;
+    }
+
+    /* 一般學員 */
+    .delete-button--normal {
+        color: #577c7e;
+
+        border:
+            1px solid rgba(174, 202, 201, 0.65);
+
+        background:
+            rgba(174, 202, 201, 0.10);
+    }
+
+    .delete-button--normal:hover {
+        color: #3f6264;
+
+        background:
+            rgba(174, 202, 201, 0.22);
+
+        box-shadow:
+            0 8px 18px rgba(87, 124, 126, 0.12);
+
+        transform: translateY(-2px);
+    }
+
+    /* 進階學員 */
+    .delete-button--advanced {
+        color: #28718b;
+
+        border:
+            1px solid rgba(91, 178, 211, 0.55);
+
+        background:
+            rgba(91, 178, 211, 0.10);
+    }
+
+    .delete-button--advanced:hover {
+        color: #1f6078;
+
+        background:
+            rgba(91, 178, 211, 0.20);
+
+        box-shadow:
+            0 8px 18px rgba(91, 178, 211, 0.16);
+
+        transform: translateY(-2px);
+    }
+
+    /* 講師 */
+    .delete-button--instructor {
+        color: #16756d;
+
+        border:
+            1px solid rgba(89, 198, 167, 0.55);
+
+        background:
+            rgba(89, 198, 167, 0.10);
+    }
+
+    .delete-button--instructor:hover {
+        color: #105e57;
+
+        background:
+            rgba(89, 198, 167, 0.20);
+
+        box-shadow:
+            0 8px 18px rgba(89, 198, 167, 0.16);
+
+        transform: translateY(-2px);
+    }
+
+    .delete-button:active {
+        transform: translateY(0);
+    }
+
+    .delete-button:disabled {
+        opacity: 0.5;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       CSS:LOADING-START
+       ========================================================= */
+    .loading-container {
+        min-height: 240px;
+
+        display: flex;
+        flex-direction: column;
+
+        justify-content: center;
+        align-items: center;
+
+        gap: 15px;
+    }
+
+    .loading-ecg {
+        position: relative;
+
+        width: min(500px, 90%);
+        height: 90px;
+
+        overflow: hidden;
+
+        border-radius: 15px;
+
+        background:
+            rgba(124, 207, 193, 0.055);
+
+        border:
+            1px solid rgba(124, 207, 193, 0.2);
+
+        box-shadow:
+            inset 0 0 25px rgba(124, 207, 193, 0.05);
+    }
+
+    .loading-ecg-svg {
+        position: absolute;
+
+        inset: 0;
+
+        width: 100%;
+        height: 100%;
+    }
+
+    .loading-ecg-wave {
+        fill: none;
+
+        stroke: var(--brand-primary);
+
+        stroke-width: 3;
+
+        stroke-linecap: round;
+        stroke-linejoin: round;
+
+        filter:
+            drop-shadow(
+                0 0 4px rgba(124, 207, 193, 0.9)
+            )
+            drop-shadow(
+                0 0 10px rgba(124, 207, 193, 0.5)
+            );
+
+        stroke-dasharray: 1500;
+        stroke-dashoffset: 1500;
+
+        animation:
+            loadingECG 4.8s linear infinite;
+    }
+
+    @keyframes loadingECG {
+        0% {
+            stroke-dashoffset: 1500;
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .loading-text {
+        color: var(--brand-dark);
+
+        font-size: 13px;
+        font-weight: 700;
+
+        letter-spacing: 1px;
+    }
+
+
+    /* =========================================================
+       CSS:TOAST-START
+       ========================================================= */
+    .toast {
+        position: fixed;
+
+        right: 25px;
+        bottom: 25px;
+
+        min-width: 240px;
+
+        padding: 15px 18px;
+
+        border-radius: 14px;
+
+        background:
+            rgba(21, 94, 99, 0.94);
+
+        color: white;
+
+        box-shadow:
+            0 18px 45px rgba(21, 94, 99, 0.22);
+
+        backdrop-filter: blur(15px);
+
+        transform:
+            translateY(30px);
+
+        opacity: 0;
+
+        pointer-events: none;
+
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
+
+        z-index: 999;
+    }
+
+    .toast.show {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+
+    /* =========================================================
+       CSS:RESPONSIVE-START
+       ========================================================= */
+    @media (max-width: 950px) {
+
+        .hero-section {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-copy {
+            text-align: center;
+        }
+
+        .hero-copy p {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .member-form {
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .member-form .form-submit {
+            grid-column: span 2;
+        }
+    }
+
+    @media (max-width: 768px) {
+
+        .site-header {
+            padding: 16px 5%;
+        }
+
+        .header-status {
+            display: none;
+        }
+
+        .page-container {
+            width: 92%;
+
+            padding-top: 35px;
+        }
+
+        .hero-copy h2 {
+            font-size: 35px;
+        }
+
+        .ecg-monitor {
+            padding: 16px;
+        }
+
+        .ecg-screen {
+            height: 160px;
+        }
+
+        .member-form {
+            grid-template-columns: 1fr;
+        }
+
+        .member-form .form-submit {
+            grid-column: auto;
+        }
+
+        .monitor-footer {
+            grid-template-columns:
+                repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .brand-text h1 {
+            font-size: 15px;
+        }
+
+        .brand-text p {
+            font-size: 10px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+        .hero-copy h2 {
+            font-size: 30px;
+        }
+
+        .ecg-screen {
+            height: 145px;
+        }
+
+        .monitor-footer {
+            gap: 5px;
+        }
+
+        .monitor-data {
+            padding: 8px 4px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- =========================================================
+     HTML:BACKGROUND-START
+     ========================================================= -->
+
+<div class="background-orb background-orb--one"></div>
+<div class="background-orb background-orb--two"></div>
+
+
+<!-- =========================================================
+     HTML:HEADER-START
+     ========================================================= -->
+
+<header class="site-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            ♥
+        </div>
+
+        <div class="brand-text">
+            <h1>Pet ECG Care</h1>
+
+            <p>
+                寵物心電圖會員管理系統
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="header-status">
+
+        <span class="status-dot"></span>
+
+        API Connected
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     HTML:MAIN-START
+     ========================================================= -->
+
+<main class="page-container">
+
+
+    <!-- =====================================================
+         HTML:HERO-START
+         ===================================================== -->
+
+    <section class="hero-section">
+
+        <div class="hero-copy">
+
+            <div class="eyebrow">
+                ♥ PET CARDIOLOGY SYSTEM
+            </div>
+
+            <h2>
+                會員資料
+                <span>管理中心</span>
+            </h2>
+
+            <p>
+                集中管理寵物心電圖課程會員資料，
+                透過清晰、輕量且具有醫療科技感的介面，
+                快速查看目前會員狀態與角色。
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             HTML:ECG-MONITOR-START
+             ================================================= -->
+
+        <div class="ecg-monitor">
+
+            <div class="monitor-header">
+
+                <div class="monitor-title">
+                    LIVE ECG MONITOR
+                </div>
+
+                <div class="monitor-heart">
+                    ♥
+                </div>
+
+            </div>
+
+
+            <div class="ecg-screen">
+
+                <div class="ecg-label">
+                    NORMAL SINUS RHYTHM
+                </div>
+
+
+                <svg
+                    class="ecg-svg"
+                    viewBox="0 0 1600 190"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                >
+
+                    <path
+                        class="ecg-wave"
+                        d="
+                        M0 100
+                        H45
+                        C55 100 62 88 72 88
+                        C82 88 88 100 98 100
+                        H150
+                        L166 100
+                        L178 100
+                        L188 58
+                        L198 142
+                        L210 100
+                        H245
+                        C260 100 268 84 282 84
+                        C296 84 304 100 318 100
+                        H390
+                        C400 100 407 88 417 88
+                        C427 88 433 100 443 100
+                        H495
+                        L510 100
+                        L522 100
+                        L532 58
+                        L542 142
+                        L554 100
+                        H590
+                        C605 100 613 84 627 84
+                        C641 84 649 100 663 100
+                        H735
+                        C745 100 752 88 762 88
+                        C772 88 778 100 788 100
+                        H840
+                        L855 100
+                        L867 100
+                        L877 58
+                        L887 142
+                        L899 100
+                        H935
+                        C950 100 958 84 972 84
+                        C986 84 994 100 1008 100
+                        H1080
+                        C1090 100 1097 88 1107 88
+                        C1117 88 1123 100 1133 100
+                        H1185
+                        L1200 100
+                        L1212 100
+                        L1222 58
+                        L1232 142
+                        L1244 100
+                        H1280
+                        C1295 100 1303 84 1317 84
+                        C1331 84 1339 100 1353 100
+                        H1425
+                        C1435 100 1442 88 1452 88
+                        C1462 88 1468 100 1478 100
+                        H1530
+                        L1545 100
+                        L1557 100
+                        L1567 58
+                        L1577 142
+                        L1589 100
+                        H1600
+                        "
+                    />
+
+                </svg>
+
+
+                <div class="ecg-bpm">
+
+                    <strong>72</strong>
+
+                    <span>
+                        BPM
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="monitor-footer">
+
+                <div class="monitor-data">
+                    <small>HR</small>
+                    <strong>72 bpm</strong>
+                </div>
+
+                <div class="monitor-data">
+                    <small>RHYTHM</small>
+                    <strong>NSR</strong>
+                </div>
+
+                <div class="monitor-data">
+                    <small>STATUS</small>
+                    <strong>STABLE</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HTML:MEMBER-FORM-START
+         ===================================================== -->
+
+    <section class="floating-card">
+
+        <div class="section-title">
+
+            <h3>
+                新增會員
+            </h3>
+
+            <p>
+                建立新的會員資料並同步至 Google Sheets
+            </p>
+
+        </div>
+
+
+        <form
+            class="member-form"
+            novalidate
+        >
+
+
+            <div class="form-group">
+
+                <label for="member-name">
+                    姓名
+                </label>
+
+                <input
+                    class="form-input"
+                    id="member-name"
+                    name="name"
+                    type="text"
+                    placeholder="會員姓名"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="member-email">
+                    Email
+                </label>
+
+                <input
+                    class="form-input"
+                    id="member-email"
+                    name="email"
+                    type="email"
+                    placeholder="example@email.com"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="member-role">
+                    角色
+                </label>
+
+                <select
+                    class="form-select"
+                    id="member-role"
+                    name="role"
+                    required
+                >
+
+                    <option value="一般學員">
+                        一般學員
+                    </option>
+
+                    <option value="進階學員">
+                        進階學員
+                    </option>
+
+                    <option value="講師">
+                        講師
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group form-submit">
+
+                <button
+                    class="primary-button"
+                    type="submit"
+                >
+                    新增會員
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- =====================================================
+         HTML:MEMBER-LIST-START
+         ===================================================== -->
+
+    <section class="floating-card table-card">
+
+        <div class="section-title">
+
+            <h3>
+                會員列表
+            </h3>
+
+            <p>
+                目前系統中的會員資料
+            </p>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="member-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>Email</th>
+                        <th>角色</th>
+                        <th>操作</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="member-table-body">
+
+                    <tr class="empty-row">
+
+                        <td colspan="5">
+
+                            <div class="loading-container">
+
+                                <div class="loading-ecg">
+
+                                    <svg
+                                        class="loading-ecg-svg"
+                                        viewBox="0 0 1500 90"
+                                        preserveAspectRatio="none"
+                                        aria-hidden="true"
+                                    >
+
+                                        <path
+                                            class="loading-ecg-wave"
+                                            d="
+                                            M0 45
+                                            H40
+                                            C48 45 54 37 62 37
+                                            C70 37 76 45 84 45
+                                            H130
+                                            L145 45
+                                            L155 45
+                                            L165 18
+                                            L175 72
+                                            L185 45
+                                            H220
+                                            C230 45 238 35 248 35
+                                            C258 35 266 45 276 45
+                                            H320
+                                            C328 45 334 37 342 37
+                                            C350 37 356 45 364 45
+                                            H410
+                                            L425 45
+                                            L435 45
+                                            L445 18
+                                            L455 72
+                                            L465 45
+                                            H500
+                                            C510 45 518 35 528 35
+                                            C538 35 546 45 556 45
+                                            H600
+                                            C608 45 614 37 622 37
+                                            C630 37 636 45 644 45
+                                            H690
+                                            L705 45
+                                            L715 45
+                                            L725 18
+                                            L735 72
+                                            L745 45
+                                            H780
+                                            C790 45 798 35 808 35
+                                            C818 35 826 45 836 45
+                                            H880
+                                            C888 45 894 37 902 37
+                                            C910 37 916 45 924 45
+                                            H970
+                                            L985 45
+                                            L995 45
+                                            L1005 18
+                                            L1015 72
+                                            L1025 45
+                                            H1060
+                                            C1070 45 1078 35 1088 35
+                                            C1098 35 1106 45 1116 45
+                                            H1160
+                                            C1168 45 1174 37 1182 37
+                                            C1190 37 1196 45 1204 45
+                                            H1250
+                                            L1265 45
+                                            L1275 45
+                                            L1285 18
+                                            L1295 72
+                                            L1305 45
+                                            H1340
+                                            C1350 45 1358 35 1368 35
+                                            C1378 35 1386 45 1396 45
+                                            H1500
+                                            "
+                                        />
+
+                                    </svg>
+
+                                </div>
+
+                                <div class="loading-text">
+                                    正在讀取會員資料...
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================================================
+     HTML:TOAST-START
+     ========================================================= -->
+
+<div class="toast"></div>
+
+
+<!-- =========================================================
+     JS:MAIN-START
+     ========================================================= -->
+
+<script>
+
+    /* =====================================================
+       JS:CONFIG-START
+       ===================================================== */
+
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbxbMcgkhhP44pFlPphTgvQGW1jLjMHW7EzOZ71CJ2DyIoo3ejR4QsBxM4G1q0Hdbx96mg/exec";
+
+
+    /* =====================================================
+       JS:DOM-START
+       ===================================================== */
+
+    const memberForm =
+        document.querySelector(".member-form");
+
+    const submitButton =
+        document.querySelector(".primary-button");
+
+    const tableBody =
+        document.querySelector(".member-table-body");
+
+    const toast =
+        document.querySelector(".toast");
+
+
+    /* =====================================================
+       JS:TOAST-START
+       ===================================================== */
+
+    function showToast(message) {
+
+        toast.textContent = message;
+
+        toast.classList.add("show");
+
+        window.setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 2800);
+    }
+
+
+    /* =====================================================
+       JS:ROLE-CLASS-START
+       ===================================================== */
+
+    function getRoleClass(role) {
+
+        if (role === "講師") {
+            return "role-instructor";
+        }
+
+        if (role === "進階學員") {
+            return "role-advanced";
+        }
+
+        return "role-normal";
+    }
+
+
+    /* =====================================================
+       JS:DELETE-ROLE-CLASS-START
+       ===================================================== */
+
+    function getDeleteButtonClass(role) {
+
+        if (role === "講師") {
+            return "delete-button--instructor";
+        }
+
+        if (role === "進階學員") {
+            return "delete-button--advanced";
+        }
+
+        return "delete-button--normal";
+    }
+
+
+    /* =====================================================
+       JS:ESCAPE-START
+       ===================================================== */
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =====================================================
+       JS:LOADING-START
+       ===================================================== */
+
+    function renderLoading() {
+
+        tableBody.innerHTML = `
+
+            <tr class="empty-row">
+
+                <td colspan="5">
+
+                    <div class="loading-container">
+
+                        <div class="loading-ecg">
+
+                            <svg
+                                class="loading-ecg-svg"
+                                viewBox="0 0 1500 90"
+                                preserveAspectRatio="none"
+                                aria-hidden="true"
+                            >
+
+                                <path
+                                    class="loading-ecg-wave"
+                                    d="
+                                    M0 45
+                                    H40
+                                    C48 45 54 37 62 37
+                                    C70 37 76 45 84 45
+                                    H130
+                                    L145 45
+                                    L155 45
+                                    L165 18
+                                    L175 72
+                                    L185 45
+                                    H220
+                                    C230 45 238 35 248 35
+                                    C258 35 266 45 276 45
+                                    H320
+                                    C328 45 334 37 342 37
+                                    C350 37 356 45 364 45
+                                    H410
+                                    L425 45
+                                    L435 45
+                                    L445 18
+                                    L455 72
+                                    L465 45
+                                    H500
+                                    C510 45 518 35 528 35
+                                    C538 35 546 45 556 45
+                                    H600
+                                    C608 45 614 37 622 37
+                                    C630 37 636 45 644 45
+                                    H690
+                                    L705 45
+                                    L715 45
+                                    L725 18
+                                    L735 72
+                                    L745 45
+                                    H780
+                                    C790 45 798 35 808 35
+                                    C818 35 826 45 836 45
+                                    H880
+                                    C888 45 894 37 902 37
+                                    C910 37 916 45 924 45
+                                    H970
+                                    L985 45
+                                    L995 45
+                                    L1005 18
+                                    L1015 72
+                                    L1025 45
+                                    H1060
+                                    C1070 45 1078 35 1088 35
+                                    C1098 35 1106 45 1116 45
+                                    H1160
+                                    C1168 45 1174 37 1182 37
+                                    C1190 37 1196 45 1204 45
+                                    H1250
+                                    L1265 45
+                                    L1275 45
+                                    L1285 18
+                                    L1295 72
+                                    L1305 45
+                                    H1340
+                                    C1350 45 1358 35 1368 35
+                                    C1378 35 1386 45 1396 45
+                                    H1500
+                                    "
+                                />
+
+                            </svg>
+
+                        </div>
+
+                        <div class="loading-text">
+                            正在讀取會員資料...
+                        </div>
+
+                    </div>
+
+                </td>
+
+            </tr>
+        `;
+    }
+
+
+    /* =====================================================
+       JS:RENDER-MEMBERS-START
+       ===================================================== */
+
+    function renderMembers(members) {
+
+        if (!members.length) {
+
+            tableBody.innerHTML = `
+
+                <tr class="empty-row">
+
+                    <td colspan="5">
+                        目前沒有會員資料
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        tableBody.innerHTML =
+            members.map(member => {
+
+                const memberId =
+                    String(member.id ?? "").trim();
+
+                const role =
+                    String(
+                        member.role ?? "一般學員"
+                    ).trim();
+
+                const roleClass =
+                    getRoleClass(role);
+
+                const deleteButtonClass =
+                    getDeleteButtonClass(role);
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(memberId)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(member.name)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(member.email)}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="role-badge ${roleClass}"
+                            >
+                                ${escapeHTML(role)}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="delete-button ${deleteButtonClass}"
+                                data-id="${escapeHTML(memberId)}"
+                                data-role="${escapeHTML(role)}"
+                            >
+                                刪除
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+    }
+
+
+    /* =====================================================
+       JS:FETCH-MEMBERS-START
+       ===================================================== */
+
+    async function fetchMembers() {
+
+        renderLoading();
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}?action=read`,
+                    {
+                        method: "GET"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                result.status === "error"
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "讀取會員資料失敗"
+                );
+            }
+
+
+            const members =
+                Array.isArray(result.data)
+                    ? result.data
+                    : [];
+
+
+            renderMembers(members);
+
+        } catch (error) {
+
+            console.error(
+                "fetchMembers error:",
+                error
+            );
+
+
+            tableBody.innerHTML = `
+
+                <tr class="empty-row">
+
+                    <td colspan="5">
+
+                        無法取得會員資料<br>
+
+                        <small>
+                            ${escapeHTML(error.message)}
+                        </small>
+
+                    </td>
+
+                </tr>
+            `;
+
+
+            showToast(
+                "讀取會員資料失敗"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       JS:DELETE-MEMBER-START
+       ===================================================== */
+
+    async function deleteMember(id) {
+
+        const memberId =
+            String(id ?? "").trim();
+
+
+        if (!memberId) {
+
+            showToast(
+                "找不到會員 ID"
+            );
+
+            return;
+        }
+
+
+        const confirmed =
+            window.confirm(
+                `確定要刪除會員「${memberId}」嗎？\n\n刪除後資料將無法復原。`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            showToast(
+                "正在刪除會員..."
+            );
+
+
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                action: "delete",
+                                id: memberId
+                            })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+
+            const result =
+                await response.json();
+
+
+            if (
+                result.status !== "success"
+            ) {
+
+                throw new Error(
+                    result.message ||
+                    "會員刪除失敗"
+                );
+            }
+
+
+            showToast(
+                result.message ||
+                "會員刪除成功"
+            );
+
+
+            await fetchMembers();
+
+        } catch (error) {
+
+            console.error(
+                "deleteMember error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "會員刪除失敗"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       JS:DELETE-EVENT-START
+       ===================================================== */
+
+    tableBody.addEventListener(
+        "click",
+        function(event) {
+
+            const deleteButton =
+                event.target.closest(
+                    ".delete-button"
+                );
+
+
+            if (!deleteButton) {
+                return;
+            }
+
+
+            const memberId =
+                deleteButton.dataset.id;
+
+
+            deleteMember(memberId);
+        }
+    );
+
+
+    /* =====================================================
+       JS:FORM-SUBMIT-START
+       ===================================================== */
+
+    memberForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            if (
+                !memberForm.checkValidity()
+            ) {
+
+                memberForm.reportValidity();
+
+                return;
+            }
+
+
+            if (
+                !API_URL ||
+                API_URL.includes("請貼上")
+            ) {
+
+                showToast(
+                    "請先設定 API_URL"
+                );
+
+                return;
+            }
+
+
+            const formData =
+                new FormData(memberForm);
+
+
+            const payload = {
+
+                action: "create",
+
+                name:
+                    String(
+                        formData.get("name") || ""
+                    ).trim(),
+
+                email:
+                    String(
+                        formData.get("email") || ""
+                    ).trim(),
+
+                role:
+                    String(
+                        formData.get("role") || ""
+                    ).trim()
+            };
+
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "儲存中...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_URL,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "text/plain;charset=utf-8"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    result.status === "error"
+                ) {
+
+                    throw new Error(
+                        result.message ||
+                        "新增會員失敗"
+                    );
+                }
+
+
+                showToast(
+                    "會員新增成功"
+                );
+
+
+                memberForm.reset();
+
+
+                await fetchMembers();
+
+            } catch (error) {
+
+                console.error(
+                    "POST error:",
+                    error
+                );
+
+
+                showToast(
+                    error.message ||
+                    "新增會員失敗"
+                );
+
+            } finally {
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    "新增會員";
+            }
+        }
+    );
+
+
+    /* =====================================================
+       JS:INITIALIZE-START
+       ===================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            fetchMembers();
+
+        }
+    );
+
+</script>
+```
+
+</body>
+</html>
